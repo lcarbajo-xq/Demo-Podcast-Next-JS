@@ -1,0 +1,46 @@
+import React from 'react'
+import Layout from '../src/components/layout';
+import Link from 'next/link';
+
+export default class Error extends React.Component {
+  static getInitialProps({ res, err }) {
+    const statusCode = res ? res.statusCode : err ? err.statusCode : null;
+    return { statusCode }
+  }
+
+  render() {
+
+    const { statusCode } = this.props
+    return (
+        <Layout title="ERROR :(">
+            { statusCode ===  404 ?
+                <div className="message">
+                    <h1>Esta página no existe :´(</h1>
+                    <p>
+                        <Link href="/">
+                            <a>Volver al Inicio :)</a>
+                        </Link>
+                    ></p>
+                </div>
+                :
+                <div className="message">
+                    <h1>Inténtalo de nuevo más tarde :´(</h1>
+                </div>
+                }
+
+                <style jsx>{`
+                    .message {
+                        padding: 100px 30 px;
+                        text-align: center;
+                    }
+                    h1 {
+                        margin-bottom: 2em;
+                    }
+                    a {
+                        text-decoration: none;     
+                    }
+                `}</style>
+        </Layout>
+    )
+  }
+}
