@@ -20,7 +20,7 @@ export default class Error extends React.Component {
                         <Link href="/">
                             <a>Volver al Inicio :)</a>
                         </Link>
-                    ></p>
+                    </p>
                 </div>
                 :
                 <div className="message">

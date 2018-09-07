@@ -1,9 +1,19 @@
 import { Component } from 'react';
 
-import Link from 'next/link';
+import Head from 'next/head';
+import { Link } from '../routes';
 import Error from './_error';
+import slug from '../helpers/slug';
+import ChannelGrid from '../src/components/channel-grid';
+import PodcastListWithClick from '../src/components/PodcastListWithClick';
+import PodcastPlayer from '../src/components/podcast-player';
 
 export default class extends Component {
+
+    constructor(props){
+        super(props);
+        this.state = { openPodcast: null }
+    }
 
     static async getInitialProps({ query, res }) {
         const idChannel = query.id;
@@ -30,28 +40,71 @@ export default class extends Component {
         }
     }
 
+    openPodcast = (event, infoPodcast) => {
+        event.preventDefault();
+        this.setState({
+            openPodcast: infoPodcast,
+        })
+    }
+
+    closePodcast = () => {
+        event.preventDefault();
+        this.setState({
+            openPodcast: null,
+        })
+    }
+
     render() {
 
         const { channel, audio_clips, channels, statusCode } = this.props
+        const { openPodcast } = this.state
+
         if (statusCode !== 200 ) {
             return <Error statusCode={ statusCode }/>
         }
         return (
+
             <div>
-                <header>Podcasts</header>
+                <Head> 
+                    <title>{ `${channel.title} | Channel` }</title> 
+                </Head>
+                <header>{ channel.title }</header>
                 <h1>{ channel.title }</h1>
-                { audio_clips.map( (clip) => (
-                    <Link href={ `/podcast?id=${ clip.id }` }>
+                
+                { openPodcast && <div className="modal">
+                                    <PodcastPlayer 
+                                        clip={ openPodcast }
+                                        onClose= {this.closePodcast }
+                                    />
+                                </div>}
+                {/* <Layout title={ `${channel.title} | Channel` }>
+                    <ChannelGrid channels={ audio_clips } />
+                </Layout> */}
+                {/* { audio_clips.map( (clip) => (
+                    <Link route='podcast' params={{ slugChannel: slug(channel.title), idChannel: channel.id, slug: slug(clip.title), id: clip.id }} >
                         <div className="clip">
                             <h2> { clip.title } </h2>
                         </div>
                     </Link>
-                )) }
+                )) } */}
 
-                { channels.map( (serie) => (
-                    <h3>{ serie.title }</h3>
-                )) }
+                <PodcastListWithClick 
+                    podcasts={ audio_clips }
+                    onClickPodcast={ this.openPodcast }
+                    />
 
+                { channels && 
+                    <div>
+                        <header> {`${ channel.title } > Series `} </header>
+                        <ChannelGrid channels={ channels } />
+                    {/* // <Link route='channel' params={{ slug: slug(channel.title), id: channel.id }} >
+                    //     <a className="channel">
+                    //         <img src={ channel.urls.logo_image.original } alt="cover"/>
+                    //         <h2> { channel.title } </h2>
+                    //     </a>
+                    // </Link> */}
+                    </div>
+                    }
                 <style jsx>{`
                     header {
                         color: #fff;
@@ -81,6 +134,14 @@ export default class extends Component {
                         font-weight: 600;
                         margin: 0;
                         text-align: absolute;
+                    }
+                    .modal {
+                        position: fixed;
+                        top: 0;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        z-index: 99999;
                     }
                 `}</style>
                 <style jsx global>{`
