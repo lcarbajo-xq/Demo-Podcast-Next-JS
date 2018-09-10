@@ -70,7 +70,8 @@ export default class extends Component {
                 </Head>
                 <header>{ channel.title }</header>
                 <h1>{ channel.title }</h1>
-                
+
+                 <div className="banner" style={{ backgroundImage: `url(${channel.urls.banner_image.original})` }} />
                 { openPodcast && <div className="modal">
                                     <PodcastPlayer 
                                         clip={ openPodcast }
@@ -87,13 +88,7 @@ export default class extends Component {
                         </div>
                     </Link>
                 )) } */}
-
-                <PodcastListWithClick 
-                    podcasts={ audio_clips }
-                    onClickPodcast={ this.openPodcast }
-                    />
-
-                { channels && 
+                { channels.length > 0 && 
                     <div>
                         <header> {`${ channel.title } > Series `} </header>
                         <ChannelGrid channels={ channels } />
@@ -104,7 +99,12 @@ export default class extends Component {
                     //     </a>
                     // </Link> */}
                     </div>
-                    }
+                }
+                <h2>Últimos Podcasts</h2>
+                <PodcastListWithClick 
+                    podcasts={ audio_clips }
+                    onClickPodcast={ this.openPodcast }
+                />
                 <style jsx>{`
                     header {
                         color: #fff;
@@ -112,6 +112,13 @@ export default class extends Component {
                         padding: 15px;
                         text-align: center;
                         font-weight: bold;
+                    }
+                    .banner {
+                        width: 100%;
+                        padding-bottom: 25%;
+                        background-position: 50% 50%;
+                        background-size: cover;
+                        background-color: #aaa;
                     }
                     .channels {
                         display: grid;

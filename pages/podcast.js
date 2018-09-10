@@ -6,13 +6,10 @@ import { Component } from 'react';
 export default class extends Component {
 
     static async getInitialProps({ query }) {
-        const idAudio = query.id;
-        console.log(query.id);
-        
+        const idAudio = query.id;        
         const requestClip = await fetch (`https://api.audioboom.com/audio_clips/${ idAudio }.mp3`);
-        
         const { body : { audio_clip } } = await requestClip.json();
-        console.log(audio_clip.title);
+        
         return { audio_clip };
     }
     render(){
